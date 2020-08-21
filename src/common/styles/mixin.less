@@ -1,0 +1,81 @@
+// 单行文本超出显示省略号
+.no-wrap() {
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+//40高度有些地方要用到统一
+@height40: 40px;
+
+// 多行文本超出显示省略号
+.no-wrap-multi(@n: 2) {
+    display: -webkit-box !important;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    word-break: break-all;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: @n; // 可显示行数
+}
+
+// 常用标题字体格式
+.title-blod(@blod: 200) {
+    display: block;
+    text-align: center;
+    font-weight: @blod;
+    .font-size14
+}
+
+// 字体粗后
+.font-blod(@blod: 200) {
+    font-weight: @blod;
+}
+
+// 字体大小
+.font-size15(@sizes: 15px) {
+    font-size: @sizes;
+}
+// 字体大小
+.font-size14(@sizes: 14px) {
+    font-size: @sizes;
+}
+
+//垂直居中
+.display-align-justify {
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+    -ms-align-items: center;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.display-align-justify(@display) when (@display=1) {
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+    -ms-align-items: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.display-align-justify(@display) when (@display=2) {
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+    -ms-align-items: center;
+    align-items: center;
+}
+
+//内减
+.padding {
+    padding: 10px;
+}
