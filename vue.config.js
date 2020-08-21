@@ -56,7 +56,15 @@ module.exports = {
 	// 调整内部的 webpack 配置。
 	// 查阅 https://github.com/vuejs/vue-docs-zh-cn/blob/master/vue-cli/webpack.md
 	chainWebpack: () => {},
-	configureWebpack: () => {},
+	configureWebpack: (config) => {
+		config.resolve={
+			extensions: ['.js', '.vue', '.json'],
+			//别名设置
+			alias: {
+				'@' : path.resolve(__dirname, './src'),
+			}
+		}
+	},
 
 	// CSS 相关选项
 	css: {
@@ -70,7 +78,7 @@ module.exports = {
 		// 为预处理器的 loader 传递自定义选项。比如传递给
 		// sass-loader 时，使用 `{ sass: { ... } }`。
 		loaderOptions: {
-	
+
 		},
 
 		// 为所有的 CSS 及其预处理文件开启 CSS Modules。
@@ -111,8 +119,8 @@ module.exports = {
 	// 三方插件的选项
 	pluginOptions: {
 		'style-resources-loader': {
-		  preProcessor: 'less',
-		  patterns: [path.resolve(__dirname, 'src/common/styles/index.less')]
+			preProcessor: 'less',
+			patterns: [path.resolve(__dirname, 'src/common/styles/index.less')]
 		}
 	}
 }
