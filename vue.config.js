@@ -8,11 +8,11 @@ module.exports = {
 	// 指定子路径。比如，如果你的应用部署在
 	// https://www.foobar.com/my-app/
 	// 那么将这个值改为 `/my-app/`
-	publicPath: '',
+	publicPath: process.env.NODE_ENV === "production" ? "" : "/",
 	/*这个是我存放在github在线预览的Reader项目*/
 
 	// 将构建好的文件输出到哪里（或者说将编译的文件）
-	outputDir: 'dist',
+	outputDir: process.env.NODE_ENV === "production" ? "dist" : "devdist",
 
 	// 放置静态资源的地方 (js/css/img/font/...)
 	assetsDir: '',
@@ -40,7 +40,7 @@ module.exports = {
 	// 是否在保存的时候使用 `eslint-loader` 进行检查。
 	// 有效的值：`ture` | `false` | `"error"`
 	// 当设置为 `"error"` 时，检查出的错误会触发编译失败。
-	lintOnSave: true,
+	lintOnSave: false,
 
 	// 使用带有浏览器内编译器的完整构建版本
 	// 查阅 https://cn.vuejs.org/v2/guide/installation.html#运行时-编译器-vs-只包含运行时
@@ -103,13 +103,13 @@ module.exports = {
 		hotOnly: false,
 		// 查阅 https://github.com/vuejs/vue-docs-zh-cn/blob/master/vue-cli/cli-service.md#配置代理
 		proxy: {
-			'/api': {
-				target: 'http://localhost:8880',
+			'/devapi': {
+				target: 'http://www.web-jshtml.cn/productapi', //手把手撸代码用这个地址也可以http://www.web-jshtml.cn/api
 				changeOrigin: true,
 				secure: false,
 				// ws: true,
 				pathRewrite: {
-					'^/api': '/static/mock' // 请求数据路径别名,这里是注意将static/mock放入public文件夹
+					'^/devapi': ''
 				}
 			}
 		},
