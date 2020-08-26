@@ -3,7 +3,11 @@ import App from "./App.vue";
 // 1.引入Composition API模块
 import VueCompositionApi from '@vue/composition-api'
 import router from "./router";
+import "./router/premit";
 import store from "./store";
+// 引入自定义全局组件icons
+import '@/icons';
+
 // 引入 Element
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';

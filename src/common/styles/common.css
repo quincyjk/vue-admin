@@ -1,0 +1,20 @@
+/* // 由于less问题暂时nav的submenu__title修改elementui样式单个写在这里 */
+li.el-submenu.is-active.is-opened .el-submenu__title{
+		background-color: #f56c6c!important
+}
+
+
+.close .el-submenu.is-opened  .el-submenu__title{
+		background-color: #f56c6c!important
+}
+.el-menu--vertical li:hover{
+	background-color: rgba(245,108,108,0.5) !important;
+}
+
+
+.pull-left{
+	float: left;
+}
+.pull-right{
+	float: right;
+}

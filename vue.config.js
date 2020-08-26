@@ -55,12 +55,22 @@ module.exports = {
 
 	// 调整内部的 webpack 配置。
 	// 查阅 https://github.com/vuejs/vue-docs-zh-cn/blob/master/vue-cli/webpack.md
-	chainWebpack: () => {},
+	chainWebpack: (config) => {
+		const svgRule = config.module.rule('svg')
+		    svgRule.uses.clear()
+		    svgRule.use('svg-sprite-loader')
+		      .loader('svg-sprite-loader')
+		      .options({
+		        symbolId: 'icon-[name]',
+		        include: ['./src/icons']
+		      })
+	},
 	configureWebpack: (config) => {
 		config.resolve={
 			extensions: ['.js', '.vue', '.json'],
 			//别名设置
 			alias: {
+				'vue' : 'vue/dist/vue.js',//vue自定义重新指向node_modules文件下的vue.js,利于全局组件模板化渲染
 				'@' : path.resolve(__dirname, './src'),
 			}
 		}
@@ -104,7 +114,7 @@ module.exports = {
 		// 查阅 https://github.com/vuejs/vue-docs-zh-cn/blob/master/vue-cli/cli-service.md#配置代理
 		proxy: {
 			'/devapi': {
-				target: 'http://www.web-jshtml.cn/productapi', //手把手撸代码用这个地址也可以http://www.web-jshtml.cn/api
+				target: 'http://www.web-jshtml.cn/productapi/token', //手把手撸代码用这个地址也可以http://www.web-jshtml.cn/api
 				changeOrigin: true,
 				secure: false,
 				// ws: true,

@@ -7,7 +7,23 @@
 }
 
 //40高度有些地方要用到统一
-@height40: 40px;
+@navMenu: 250px;
+@navMenuMin: 64px;
+@headerMenu: 75px;
+
+// 过度
+.transitions(){
+	-webkit-transition:0.3s;
+	-moz-transition:0.3s;
+	-o-transition:0.3s;
+	-ms-transition:0.3s;
+	transition:0.3s;
+}
+
+
+// f56c6c主色调
+@mainColor: #f56c6c;
+
 
 // 多行文本超出显示省略号
 .no-wrap-multi(@n: 2) {
@@ -20,27 +36,6 @@
     -webkit-line-clamp: @n; // 可显示行数
 }
 
-// 常用标题字体格式
-.title-blod(@blod: 200) {
-    display: block;
-    text-align: center;
-    font-weight: @blod;
-    .font-size14
-}
-
-// 字体粗后
-.font-blod(@blod: 200) {
-    font-weight: @blod;
-}
-
-// 字体大小
-.font-size15(@sizes: 15px) {
-    font-size: @sizes;
-}
-// 字体大小
-.font-size14(@sizes: 14px) {
-    font-size: @sizes;
-}
 
 //垂直居中
 .display-align-justify {
@@ -73,9 +68,4 @@
     display: flex;
     -ms-align-items: center;
     align-items: center;
-}
-
-//内减
-.padding {
-    padding: 10px;
 }

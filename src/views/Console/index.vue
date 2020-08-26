@@ -1,5 +1,7 @@
 <template>
-	<div>用户列表</div>
+	<div>
+		123456
+	</div>
 </template>
 
 <script>

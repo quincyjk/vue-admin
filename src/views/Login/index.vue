@@ -2,8 +2,8 @@
 	<div id="login">
 		<div>
 			<div class="tab">
-				<el-button @click="handleSwitchHide(1)" :type="switchHide?'success':''">登陆</el-button>
-				<el-button @click="handleSwitchHide(2)" :type="switchHide==false?'success':''">注册</el-button>
+				<el-button @click="handleSwitchHide(),switchHide=true" :type="switchHide?'success':''">登陆</el-button>
+				<el-button @click="handleSwitchHide(),switchHide=false" :type="switchHide==false?'success':''">注册</el-button>
 			</div>
 			<el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm">
 				<el-form-item class="item-list" prop="username">
@@ -14,7 +14,7 @@
 					<label for="password">密码</label>
 					<el-input id="password" type="password" v-model="ruleForm.password" maxlength="20" minlength="6" autocomplete="off"></el-input>
 				</el-form-item>
-				<el-form-item class="item-list" prop="passwords" v-if="!switchHide">
+				<el-form-item class="item-list" prop="passwords" v-show="!switchHide">
 					<label for="passwords">重复密码</label>
 					<el-input id="passwords" type="password" v-model="ruleForm.passwords" maxlength="20" minlength="6" autocomplete="off"></el-input>
 				</el-form-item>
@@ -26,28 +26,30 @@
 						</el-col>
 						<el-col :span="9">
 							<div class="btwrap">
-								<el-button type="primary" @click="handleGetSms">获取验证码</el-button>
-								<span>默认状态</span>
+								<el-button type="primary" style="width: 120px;text-align: center;" @click="handleGetSms" :disabled="buttonStatus.status">{{buttonStatus.text}}</el-button>
+								<span>{{buttonStatus.tip}}</span>
 							</div>
 						</el-col>
 					</el-row>
 				</el-form-item>
-				<el-button :disabled="loginButtonStatus" style="width: 100%;margin-top: 30px;" type="danger" @click="handlesubmitForm('ruleForm')">{{switchHide?'登陆':'注册'}}</el-button>
+				<el-button :disabled="buttonStatus.loginStatus" :loading="buttonStatus.loadingStatus" style="width: 100%;margin-top: 30px;"
+				 type="danger" @click="handlesubmitForm('ruleForm')">{{switchHide?'登陆':'注册'}}</el-button>
 			</el-form>
 		</div>
 	</div>
 </template>
 
 <script>
+	import sha1 from 'js-sha1'
+	import cookies from "cookie_js";
 	import {
 		GetSms,
-		Register,
-		Login
 	} from "@/api/login";
 	import {
 		reactive,
 		ref,
-		onMounted
+		onMounted,
+		computed
 	} from "@vue/composition-api";
 	import {
 		stripscripts,
@@ -82,6 +84,10 @@
 			};
 			// 验证重复密码
 			var validatePassword2 = (rule, value, callback) => {
+				if (switchHide.value == true) {
+					callback();
+					return false
+				}
 				ruleForm.passwords = stripscripts(value)
 				value = ruleForm.passwords
 				if (value === '') {
@@ -105,17 +111,26 @@
 				}
 
 			};
+
+			// 声明变量timer
+			const timer = ref(null);
 			// 模块切换值
-			const switchHide = ref(true)
-			// 登陆状态
-			const loginButtonStatus = ref(true)
+			const switchHide = ref(true);
+			// 按钮状态
+			const buttonStatus = reactive({
+				status: false,
+				text: '获取验证码',
+				loginStatus: true,
+				tip: '默认状态',
+				loadingStatus: false,
+			});
 			// 表单绑定数据
 			const ruleForm = reactive({
-				username: '',
-				password: '',
+				username: 'ljk@qq.com',
+				password: 'a123456',
 				passwords: '',
 				code: '',
-			})
+			});
 			// 表单验证绑定
 			const rules = reactive({
 				username: [{
@@ -136,58 +151,147 @@
 				}]
 			});
 			// 获取验证码
-			const handleGetSms = (()=>{
-			
-				if(ruleForm.username==""){
-					 context.root.$message.error('邮箱不能为空');
-					 return false
-				}else if(validateEmails(ruleForm.username)){
+			const handleGetSms = (() => {
+
+				if (ruleForm.username == "") {
+					context.root.$message.error('邮箱不能为空');
+					return false
+				} else if (validateEmails(ruleForm.username)) {
 					context.root.$message.error('邮箱格式有误，请重新输入！！！');
 					return false
 				}
-				GetSms({username:ruleForm.username,module:'login'}).then(res=>{
-					var data =res.data
-					if(data.resCode==0){
-						
-					}
-				}).catch(err =>{
-					// console.log(err)
-				})
-			})
+				buttonStatus.status = true
+				buttonStatus.text = "发送中"
+				setTimeout(() => {
+					GetSms({
+						username: ruleForm.username,
+						module: switchHide.value ? 'login' : 'register'
+					}).then(res => {
+						var data = res.data
+						if (data.resCode == 0) {
+							context.root.$message({
+								message: data.message,
+								type: 'success'
+							});
+							ruleForm.code = data.message.substring(11)
+							buttonStatus.loginStatus = false
+							countDown(30)
+						}
+					}).catch(err => {
+						buttonStatus.status = false
+						buttonStatus.text = "获取验证码"
+					})
+				}, 3000)
+
+
+			});
+
+
 			// 切换模块
-			const handleSwitchHide = (e => {
-				if (e == 1) {
-					switchHide.value = true
-				} else if (e == 2) {
-					switchHide.value = false
-				}
-			})
+			const handleSwitchHide = (() => {
+				// 清除input内容
+				context.refs.ruleForm.resetFields();
+				// 清除倒计时还原状态
+				claerCountDown()
+				// 登陆按钮禁用状态清除
+				buttonStatus.loginStatus = true
+			});
+
 			// 提交表单
 			const handlesubmitForm = (formName => {
 				context.refs[formName].validate((valid) => {
 					if (valid) {
 						var data = {
-							username:ruleForm.username,
-							password:ruleForm.password,
-							code:ruleForm.code
+							username: ruleForm.username,
+							password: sha1(ruleForm.password),
+							code: ruleForm.code,
+							module: switchHide.value == true ? 'login' : 'register'
 						}
-						if(switchHide.value==false){
-							Register(data)
+						// 注册
+						if (switchHide.value == false) {
+
+							Register(data).then(res => {
+								var data = res.data
+								if (data.resCode == 0) {
+									context.root.$message({
+										message: data.message,
+										type: 'success'
+									});
+									buttonStatus.loginStatus = true
+									buttonStatus.loadingStatus = true
+									setTimeout(() => {
+										switchHide.value = true
+										if (switchHide.value == true) {
+											// 清除倒计时还原状态
+											claerCountDown()
+											ruleForm.code = ''
+										}
+										buttonStatus.loginStatus = false
+										buttonStatus.loadingStatus = false
+									}, 1000)
+								}
+							}).catch(err => {
+
+							})
+
 						}
-						if(switchHide.value==true){
-							Login(data)
+						// 登陆
+						if (switchHide.value == true) {
+							context.root.$store.dispatch('login/Login', data).then(res => {
+								var data = res.data
+								if (data.resCode == 0) {
+									buttonStatus.loginStatus = true
+									buttonStatus.loadingStatus = true
+									setTimeout(() => {
+										context.root.$router.push({
+											name: 'Console'
+										})
+										buttonStatus.loginStatus = false
+										buttonStatus.loadingStatus = false
+									}, 1000)
+								}
+							}).catch(err => {
+							})
+
+
 						}
 					} else {
+						console.log('error submit')
 						return false;
 					}
 				});
-			})
+			});
+
+			// 倒计时
+			const countDown = (num => {
+				// 初始化timer值为null
+				timer.value = setInterval(() => {
+					num--
+					if (num === 0) {
+						clearInterval(timer.value)
+						buttonStatus.text = "再次获取"
+						buttonStatus.status = false
+						buttonStatus.tip = "结束状态"
+					} else {
+						buttonStatus.text = `倒计时${num}后`
+						buttonStatus.tip = "进行状态"
+					}
+				}, 1000)
+			});
+			// 清除倒计时
+			const claerCountDown = (num => {
+				buttonStatus.text = "获取验证码"
+				buttonStatus.tip = "默认状态"
+				clearInterval(timer.value)
+				buttonStatus.status = false
+			});
+
 			// 生命周期
-			onMounted(() => {
-			})
+			onMounted(() => {});
+
 			// 返回值
 			return {
-				loginButtonStatus,
+				buttonStatus,
 				switchHide,
 				ruleForm,
 				rules,
