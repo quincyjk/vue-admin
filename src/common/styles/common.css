@@ -18,3 +18,7 @@ li.el-submenu.is-active.is-opened .el-submenu__title{
 .pull-right{
 	float: right;
 }
+
+.el-table td, .el-table th{
+	text-align: center;
+}

@@ -2,7 +2,7 @@ import axios from 'axios'
 import {
 	Message
 } from 'element-ui';
-
+import {getToken,getUsername} from '@/utils/app'
 // 前端API，地址 http://www.web-jshtml.cn/productApi
 // 创建axios,赋给变量service
 var BASEURL = process.env.NODE_ENV === "production" ? "" : "/devapi"
@@ -12,6 +12,8 @@ const service = axios.create({
 });
 // 添加请求拦截器
 service.interceptors.request.use(function(config) {
+	config.headers['Tokey'] = getToken()
+	config.headers['UserName'] =getUsername()
 	// 在发送请求之前做些什么
 	return config;
 }, function(error) {
@@ -21,6 +23,7 @@ service.interceptors.request.use(function(config) {
 
 // 添加响应拦截器
 service.interceptors.response.use(function(response) {
+
 	// 对响应数据做点什么
 	var data = response.data
 	if (data.resCode != 0) {

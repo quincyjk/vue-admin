@@ -18,8 +18,8 @@ export function removeToken(){
 	return cookies.remove(adminToken);
 }
 // 增加Username
-export function setUsername(value){
-	return cookies.set(userName,value);
+export function setUsername(token){
+	return cookies.set(userName,token);
 }
 // 获取Username
 export function getUsername(){

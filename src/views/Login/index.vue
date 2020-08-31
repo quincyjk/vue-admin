@@ -44,6 +44,7 @@
 	import cookies from "cookie_js";
 	import {
 		GetSms,
+		deleteCategory
 	} from "@/api/login";
 	import {
 		reactive,

@@ -19,7 +19,17 @@
 	-ms-transition:0.3s;
 	transition:0.3s;
 }
-
+.labelDom(@align,@width,@line-height:"normal"){
+	 	label{
+	 		float: left;
+	 		width: @width;
+	 		line-height: @line-height;
+			text-align: @align;
+	 	}
+	 	.wrap-content{
+	 		margin-left:@width;
+	 	}
+ }
 
 // f56c6c主色调
 @mainColor: #f56c6c;

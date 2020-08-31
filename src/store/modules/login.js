@@ -23,8 +23,8 @@ const actions = {
 			// 登陆
 			Login(data).then(res => {
 				const data = res.data.data
-				setToken('admin_token',data.token)
-				setUsername('user_name',data.username)
+				setToken(data.token)
+				setUsername(data.username)
 				context.commit('SET_TOKEN',data.token)
 				context.commit('SET_USERNAME',data.username)
 				reslove(res)

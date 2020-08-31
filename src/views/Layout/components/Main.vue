@@ -34,6 +34,7 @@
 		background-color: #fff;
 		padding: 30px;
 		border:31px solid #f7f7f7;
+		overflow: auto;
 	}
 	.open {
 		left: @navMenu;
