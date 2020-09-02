@@ -7,7 +7,12 @@ import "./router/premit";
 import store from "./store";
 // 引入自定义全局组件icons
 import '@/icons';
-
+// 富文本
+import  VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+Vue.use(VueQuillEditor)
 
 // 引入自定义全局组件global
 // import global from '@/utils/global.js'

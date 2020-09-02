@@ -1,6 +1,13 @@
 import https from "@/utils/https"
 
-
+// 获取七牛云toKen
+export function uploadImgToken(data){
+	return https.request({
+		method:"post",
+		url:"/uploadImgToken/",
+		data,
+	})
+}
 // 修改信息
 export function editInfo(data){
 	return https.request({

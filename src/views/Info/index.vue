@@ -27,7 +27,7 @@
 					<div class="label-wrap key_word">
 						<label for="">关键字：</label>
 						<div class="wrap-content">
-							<el-select  v-model="searchFrom.categoryValueKey" placeholder="请选择" style="width: 100%;">
+							<el-select v-model="searchFrom.categoryValueKey" placeholder="请选择" style="width: 100%;">
 								<el-option v-for="item in categroyKeyWord" :key="item.id" :label="item.name" :value="item.id">
 								</el-option>
 							</el-select>
@@ -46,7 +46,7 @@
 			</el-row>
 		</el-form>
 		<!-- 表格 -->
-		<el-table ref="multipleTable"  @selection-change="handleCategoryChange" v-loading="loading" empty-text="暂无数据!" :data="categroyDataList.item"
+		<el-table ref="multipleTable" @selection-change="handleCategoryChange" v-loading="loading" empty-text="暂无数据!" :data="categroyDataList.item"
 		 border style="width: 100%;margin-top: 20px">
 			<el-table-column type="selection" width="55">
 			</el-table-column>
@@ -62,6 +62,7 @@
 				<template slot-scope="scope">
 					<el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
 					<el-button size="mini" type="success" @click="handleEdit(scope.$index, scope.row),editType=true,dialogInfoKey=true">编辑</el-button>
+					<el-button size="mini" type="success" @click="handleDetailds(scope.row)">编辑详情</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -77,7 +78,8 @@
 			</el-col>
 		</el-row>
 
-		<dialogInfo :categroyStatusVal="categroyStatus.item" :editType="editType" :editTypeList="editTypeList" @refresh="handleRefresh($event)" :flag.sync="dialogInfoKey"></dialogInfo>
+		<dialogInfo :categroyStatusVal="categroyStatus.item" :editType="editType" :editTypeList="editTypeList" @refresh="handleRefresh($event)"
+		 :flag.sync="dialogInfoKey"></dialogInfo>
 	</div>
 </template>
 
@@ -133,19 +135,21 @@
 			})
 			// 编辑类型
 			const editType = ref(false)
-			
+
 			// 搜索组
 			const searchFrom = reactive({
 				categoryId: '',
-				startTiem:'',
+				startTiem: '',
 				endTime: '',
-				title:'',
+				title: '',
 				id: '',
-				categoryValueKey:'ID',
-				categoryValueKeyWord:'',
+				categoryValueKey: 'ID',
+				categoryValueKeyWord: '',
 			})
 			// 编辑数组
-			const editTypeList =reactive({item:{}})
+			const editTypeList = reactive({
+				item: {}
+			})
 			// 类别
 			const categroyStatus = reactive({
 				item: []
@@ -163,11 +167,11 @@
 				item: []
 			})
 			// 数据参数
-		
-			const formData =()=>{
-				let data =reactive({
+
+			const formData = () => {
+				let data = reactive({
 					categoryId: searchFrom.categoryId,
-					startTiem:searchFrom.startTiem,
+					startTiem: searchFrom.startTiem,
 					endTime: searchFrom.endTime,
 					title: searchFrom.title,
 					id: searchFrom.id,
@@ -185,11 +189,11 @@
 			const handleDelete = (index, row) => {
 				deleteItem({
 					title: '确认删除当前信息，确认后将无法恢复！！',
-					id:()=>{
+					id: () => {
 						categroyID.value = [row.id]
 					},
 					fn: DeleteInfo,
-					
+
 				})
 			}
 			// 批量删除
@@ -207,7 +211,7 @@
 				})
 
 			}
-		
+
 			// 勾选选择项发生变化时会触发事件
 			const handleCategoryChange = (val) => {
 				let dataId = val.map(item => item.id)
@@ -249,11 +253,11 @@
 			}
 			const formatCategoryId = (row, column, cellValue, index) => {
 				var data = categroyStatus.item.filter(item => item.id == row.categoryId)[0]
-				if(data){
+				if (data) {
 					return data.category_name
 				}
 			}
-		
+
 			// 获取信息列表
 			const GetList = () => {
 				let data = formData()
@@ -279,29 +283,45 @@
 				// categroyDataList.item[index].content=val.content
 				// categroyDataList.item[index].categoryId=val.categoryId
 			}
-	
+
 			// 搜素
 			const hanleSearch = () => {
 				if (searchFrom.categoryValueKey == '标题') {
 					searchFrom.title = searchFrom.categoryValueKeyWord
-					searchFrom.id=''
+					searchFrom.id = ''
 				}
 				if (searchFrom.categoryValueKey == 'ID') {
 					searchFrom.id = searchFrom.categoryValueKeyWord
-					searchFrom.title=''
+					searchFrom.title = ''
 				}
-				if(dateValue.value ==null){
-					searchFrom.startTiem =''
-					searchFrom.endTime =''
+				if (dateValue.value == null) {
+					searchFrom.startTiem = ''
+					searchFrom.endTime = ''
 				}
-				if(dateValue.value !=null){
+				if (dateValue.value != null) {
 					searchFrom.startTiem = dateValue.value[0]
 					searchFrom.endTime = dateValue.value[1]
 				}
 				searchFrom.categoryId = searchFrom.categoryId
-				page.pageNumber=1
-				page.pageSize=10
+				page.pageNumber = 1
+				page.pageSize = 10
 				GetList()
+			}
+			// 编辑详情
+			const handleDetailds = (value) => {
+				context.root.$router.push('Detailes')
+				context.root.$store.commit('detailes/INFO_DETAILES_ID', {
+					id: {
+						value: value.id,
+						session: true,
+						sessionName: 'infoDetailesId'
+					},
+					title: {
+						value: value.title,
+						session: true,
+						sessionName: 'infoDetailesTitle'
+					}
+				})
 			}
 			return {
 				// ref
@@ -327,7 +347,8 @@
 				formatCategoryId,
 				handleCategoryChange,
 				handleRefresh,
-				hanleSearch
+				hanleSearch,
+				handleDetailds
 			}
 		}
 	}

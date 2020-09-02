@@ -1,5 +1,6 @@
 	import {
-		getCategoryAll
+		getCategoryAll,
+		uploadImgToken
 	}
 	from "@/api/news"
 	import {
@@ -22,9 +23,23 @@ export function common(){
 		 })
 		
 	 }
-
+	 // 获取七牛云token
+	const UploadImgToken=()=>{
+	
+		uploadImgToken().then(res=>{
+			const data = res.data
+			if (data.resCode === 0) {
+				Arrs.item =data.data
+			}
+		}).catch(err=>{
+			
+		})
+	}
 	 return{
 		 GetCategory,
 		 Arrs,
+		 UploadImgToken
 	 }
 }
+
+

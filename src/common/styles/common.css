@@ -22,3 +22,6 @@ li.el-submenu.is-active.is-opened .el-submenu__title{
 .el-table td, .el-table th{
 	text-align: center;
 }
+[v-cloak]{
+    display: none;
+}

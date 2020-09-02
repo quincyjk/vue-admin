@@ -1,6 +1,7 @@
 <template>
 	<!-- 提示框 -->
-	<el-dialog :title="editType==true?'修改':'新增'" :visible.sync="dialogInfoKey" width="580px" :modal-append-to-body='false' @close="close" @open="opened">
+	<el-dialog :title="editType==true?'修改':'新增'" :visible.sync="dialogInfoKey" width="580px" :modal-append-to-body='false'
+	 @close="close" @open="opened">
 		<el-form :model="ruleForm" ref="ruleForm" class="demo-ruleForm">
 			<el-form-item label="类别" prop="categoryId" :label-width="fromLabelWidth">
 				<el-select clearable v-model="ruleForm.categoryId" placeholder="请选择">
@@ -49,7 +50,7 @@
 				type: Boolean,
 				default: false
 			},
-			editTypeList:{
+			editTypeList: {
 				type: Object,
 				default: () => {}
 			}
@@ -62,10 +63,10 @@
 			const dialogInfoKey = ref(false)
 			const categroyValue = ref('')
 			const loading = ref(false)
-	
+
 			// reactive
 			const ruleForm = reactive({
-				categoryId:'',
+				categoryId: '',
 				title: '',
 				imgUrl: '',
 				createDate: '',
@@ -80,8 +81,8 @@
 				context.emit('update:flag', false)
 			}
 			const submitForm = () => {
-			
-	
+
+
 				if (!ruleForm.categoryId) {
 					context.root.$message({
 						type: 'success',
@@ -107,14 +108,14 @@
 				loading.value = true
 				// 添加
 				if (props.editType == false) {
-					let addData ={
-								categoryId:ruleForm.categoryId,
-								title: ruleForm.title,
-								imgUrl: ruleForm.imgUrl,
-								createDate: ruleForm.createDate,
-								status: ruleForm.status,
-								content: ruleForm.content,
-							}
+					let addData = {
+						categoryId: ruleForm.categoryId,
+						title: ruleForm.title,
+						imgUrl: ruleForm.imgUrl,
+						createDate: ruleForm.createDate,
+						status: ruleForm.status,
+						content: ruleForm.content,
+					}
 					add(addData).then(res => {
 						let data = res.data
 						if (data.resCode === 0) {
@@ -132,15 +133,15 @@
 				}
 				// 修改
 				if (props.editType == true) {
-					let editData ={
-								categoryId:ruleForm.categoryId,
-								title: ruleForm.title,
-								imgUrl: ruleForm.imgUrl,
-								createDate: ruleForm.createDate,
-								status: ruleForm.status,
-								content: ruleForm.content,
-								id:props.editTypeList.item.id
-							}
+					let editData = {
+						categoryId: ruleForm.categoryId,
+						title: ruleForm.title,
+						imgUrl: ruleForm.imgUrl,
+						createDate: ruleForm.createDate,
+						status: ruleForm.status,
+						content: ruleForm.content,
+						id: props.editTypeList.item.id
+					}
 					editInfo(editData).then(res => {
 						let data = res.data
 						if (data.resCode === 0) {
@@ -150,8 +151,8 @@
 							});
 							loading.value = false
 							context.refs.ruleForm.resetFields();
-							context.emit('refresh',editData)
-							dialogInfoKey.value=false
+							context.emit('refresh', editData)
+							dialogInfoKey.value = false
 						}
 					}).catch(err => {
 						loading.value = false
@@ -160,19 +161,19 @@
 			}
 			const opened = () => {
 				categroyStatus.item = props.categroyStatusVal
-					if(props.editType==true){
-						ruleForm.categoryId=props.editTypeList.item.categoryId
-						ruleForm.title=props.editTypeList.item.title
-						ruleForm.content=props.editTypeList.item.content
-					}else{
-						ruleForm.categoryId=''
-						ruleForm.title=''
-						ruleForm.content=''
-					}
+				if (props.editType == true) {
+					ruleForm.categoryId = props.editTypeList.item.categoryId
+					ruleForm.title = props.editTypeList.item.title
+					ruleForm.content = props.editTypeList.item.content
+				} else {
+					ruleForm.categoryId = ''
+					ruleForm.title = ''
+					ruleForm.content = ''
+				}
 			}
 			// 生命周期
 			onMounted(() => {
-				
+
 			})
 			watch(() => {
 				dialogInfoKey.value = props.flag
