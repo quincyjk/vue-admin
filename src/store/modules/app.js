@@ -1,11 +1,11 @@
 import Cookies from "cookie_js"
 
 if(Cookies.get('collapse')=='undefined'||Cookies.get('collapse')==undefined){
-	Cookies.set('collapse',true)
+	Cookies.set('collapse',false)
 }
 
 const state = {
-	collapse:JSON.parse(Cookies.get('collapse')) || false
+	collapse:false || JSON.parse(Cookies.get('collapse'))
 }
 const mutations = {
 	SET_COLLAPSE(state){

@@ -33,8 +33,14 @@
 			const isCollapse = computed(() => context.root.$store.state.app.collapse)
 			const handleExit = ()=>{
 
-				context.root.$store.dispatch('login/Exit').then(()=>{
-					context.root.$router.push('/login')
+				context.root.$store.dispatch('login/Logout').then(res=>{
+					if(res.resCode===0){
+						context.root.$message({
+							message: res.message,
+							type: 'success'
+						});
+						context.root.$router.push('/login')
+					}
 				})
 				
 			}

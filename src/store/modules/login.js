@@ -1,5 +1,6 @@
 import {
-	Login
+	Login,
+	Logout
 } from "@/api/login";
 import {setToken,setUsername,getUsername,removeUsername,removeToken} from '@/utils/app'
 
@@ -34,13 +35,17 @@ const actions = {
 		})
 	},
 	// 退出
-	Exit(context, data){
+	Logout(context, data){
 		return new Promise((reslove,reject)=>{
-			removeToken()
-			removeUsername()
-			context.commit('SET_TOKEN','')
-			context.commit('SET_USERNAME','')
-			reslove()
+			Logout().then(res=>{
+				removeToken()
+				removeUsername()
+				context.commit('SET_TOKEN','')
+				context.commit('SET_USERNAME','')
+				reslove(res.data)
+			}).catch(err=>{
+				reject(err)
+			})
 		})
 	}
 }

@@ -25,3 +25,10 @@ li.el-submenu.is-active.is-opened .el-submenu__title{
 [v-cloak]{
     display: none;
 }
+
+.hieddenBtnPerm{
+	display: none;
+}
+.showBtnPerm{
+	display:inline-block;
+}

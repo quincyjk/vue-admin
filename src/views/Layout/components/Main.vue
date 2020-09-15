@@ -1,6 +1,9 @@
 <template>
 	<div id="main-wrap"  :class="[!isCollapse?'open':'close']">
-		<router-view />
+		 <keep-alive>
+		 <router-view v-if="$route.meta.keepAlive"></router-view>
+		 </keep-alive>
+		<router-view v-if="!$route.meta.keepAlive"></router-view>
 	</div>
 </template>
 

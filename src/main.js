@@ -3,8 +3,10 @@ import App from "./App.vue";
 // 1.引入Composition API模块
 import VueCompositionApi from '@vue/composition-api'
 import router from "./router";
-import "./router/premit";
+import "@/utils/instructions";
 import store from "./store";
+// 引入按钮权限指令
+import "./router/premit";
 // 引入自定义全局组件icons
 import '@/icons';
 // 富文本

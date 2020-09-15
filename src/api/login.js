@@ -8,8 +8,14 @@ export function GetSms(data){
 		// data:data左边的data是变量名（key）后台接收的。右边的的data是接收的参数。如果两者都是同名的情况下，可以写成单一个即可（es6写法）
 	})
 }
-// 获取用户角色
-
+// 注销
+export function Logout(data){
+	return https.request({
+		method:"post",
+		url:"/logout/",
+		data,
+	})
+}
 // 登陆
 export function Login(data){
 	return https.request({

@@ -5,7 +5,7 @@ import {
 import {getToken,getUsername} from '@/utils/app'
 // 前端API，地址 http://www.web-jshtml.cn/productApi
 // 创建axios,赋给变量service
-var BASEURL = process.env.NODE_ENV === "production" ? "" : "/devapi"
+var BASEURL = process.env.NODE_ENV === "production" ? process.env.VUE_APP_API : process.env.VUE_APP_API
 const service = axios.create({
 	baseURL: BASEURL,
 	timeout: 15000,

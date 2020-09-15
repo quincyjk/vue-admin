@@ -41,43 +41,20 @@
 					<el-button type="danger" @click="hanleSearch">搜素</el-button>
 				</el-col>
 				<el-col :span="3" style="text-align: right;">
-					<el-button type="danger" @click="editTypeList.item=null,editType=false,dialogInfoKey=true">新增</el-button>
+					<el-button type="danger" v-buttonPerm="'info:add'" @click="editTypeList.item=null,editType=false,dialogInfoKey=true">新增</el-button>
 				</el-col>
 			</el-row>
 		</el-form>
 		<!-- 表格 -->
-		<el-table ref="multipleTable" @selection-change="handleCategoryChange" v-loading="loading" empty-text="暂无数据!" :data="categroyDataList.item"
-		 border style="width: 100%;margin-top: 20px">
-			<el-table-column type="selection" width="55">
-			</el-table-column>
-			<el-table-column prop="title" label="标题" width="700">
-			</el-table-column>
-			<el-table-column prop="categoryId" :formatter="formatCategoryId" width="120" label="类别">
-			</el-table-column>
-			<el-table-column prop="createDate" :formatter="formatDateFormat" label="日期" width="230">
-			</el-table-column>
-			<el-table-column prop="user" label="管理人" width="120">
-			</el-table-column>
-			<el-table-column label="操作">
-				<template slot-scope="scope">
-					<el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-					<el-button size="mini" type="success" @click="handleEdit(scope.$index, scope.row),editType=true,dialogInfoKey=true">编辑</el-button>
-					<el-button size="mini" type="success" @click="handleDetailds(scope.row)">编辑详情</el-button>
-				</template>
-			</el-table-column>
-		</el-table>
-		<!-- 底部分页 -->
-		<el-row style="margin-top: 20px">
-			<el-col :span="12">
-				<el-button @click="handleDeleteAll()">批量删除</el-button>
-			</el-col>
-			<el-col :span="12">
-				<el-pagination @size-change="changeInfoPageSize" @current-change="changeInfoPage" class="pull-right" background
-				 page-size layout="total,sizes,prev, pager, next,jumper" :total="total">
-				</el-pagination>
-			</el-col>
-		</el-row>
-
+		
+		<generalTable :categroyStatus="categroyStatus.item" :tableConfig="tableConfig" @handleDeleteAll="handleDeleteAll" @handleCategoryChange="handleCategoryChange"
+		 @changeInfoPageSize="changeInfoPageSize" @changeInfoPage="changeInfoPage">
+			<template v-slot:operation="statData">
+			<el-button size="mini" type="danger"  v-buttonPerm="'info:del'"  @click="handleDelete(statData.data)">删除</el-button>
+			<el-button size="mini" type="success" v-buttonPerm="'info:edit'"  @click="handleEdit(statData.data),editType=true,dialogInfoKey=true">编辑</el-button>
+			<el-button size="mini" type="success" v-buttonPerm="'info:detailed'" @click="handleDetailds(statData.data)">编辑详情</el-button>
+			</template>
+		</generalTable>
 		<dialogInfo :categroyStatusVal="categroyStatus.item" :editType="editType" :editTypeList="editTypeList" @refresh="handleRefresh($event)"
 		 :flag.sync="dialogInfoKey"></dialogInfo>
 	</div>
@@ -93,10 +70,10 @@
 		common
 	} from "@/api/common"
 	import dialogInfo from '@/views/Info/dialog/info.vue'
+		import generalTable from '@/components/general-table/index.vue'
 	// 引入自定义全局组件global
 	import {
 		global,
-		dateFormat
 	} from '@/utils/global'
 	import {
 		reactive,
@@ -107,7 +84,8 @@
 	} from "@vue/composition-api";
 	export default {
 		components: {
-			dialogInfo
+			dialogInfo,
+			generalTable
 		},
 		setup(props, context) {
 			const {
@@ -124,8 +102,7 @@
 			const dialogInfoKey = ref(false)
 			// 日期
 			const dateValue = ref('')
-			// 页码
-			const total = ref('')
+			
 			// loading
 			const loading = ref(false)
 			// 页数改变数值
@@ -135,7 +112,7 @@
 			})
 			// 编辑类型
 			const editType = ref(false)
-
+			
 			// 搜索组
 			const searchFrom = reactive({
 				categoryId: '',
@@ -146,6 +123,35 @@
 				categoryValueKey: 'ID',
 				categoryValueKeyWord: '',
 			})
+			// 数据组
+			const tableConfig = reactive({
+				total: '',
+				tableData: [],
+				tableHeader: [{
+					label: "标题",
+					width: '600',
+					feild: 'title'
+				}, {
+					label: "类别",
+					width: '180',
+					feild: 'categoryId'
+				}, {
+					label: "日期",
+					width: '190',
+					feild: 'createDate'
+				}, {
+					label: "管理人",
+					width: '240',
+					feild: ''
+				}, {
+					label: "操作",
+					feild: 'status',
+					existential: 'slot',
+					slotName: 'operation'
+				}]
+			})
+			
+			
 			// 编辑数组
 			const editTypeList = reactive({
 				item: {}
@@ -182,11 +188,11 @@
 			}
 
 			// 操作编辑
-			const handleEdit = (index, row) => {
+			const handleEdit = ( row) => {
 				editTypeList.item = row
 			}
 			// 操作删除
-			const handleDelete = (index, row) => {
+			const handleDelete = (row) => {
 				deleteItem({
 					title: '确认删除当前信息，确认后将无法恢复！！',
 					id: () => {
@@ -247,16 +253,6 @@
 			watch(() => Arrs.item, (value) => {
 				categroyStatus.item = value
 			})
-			// 内容格式化
-			const formatDateFormat = (row, index) => {
-				return dateFormat(row.createDate)
-			}
-			const formatCategoryId = (row, column, cellValue, index) => {
-				var data = categroyStatus.item.filter(item => item.id == row.categoryId)[0]
-				if (data) {
-					return data.category_name
-				}
-			}
 
 			// 获取信息列表
 			const GetList = () => {
@@ -265,8 +261,8 @@
 				getList(data).then(res => {
 					const data = res.data
 					if (data.resCode === 0) {
-						categroyDataList.item = data.data.data
-						total.value = data.data.total
+						tableConfig.tableData = data.data.data
+						tableConfig.total = data.data.total				
 						loading.value = false
 					}
 				}).catch(err => {
@@ -326,13 +322,12 @@
 			return {
 				// ref
 				dialogInfoKey,
-				total,
 				loading,
 				dateValue,
 				editType,
 				// reactive
 				searchFrom,
-				categroyDataList,
+				tableConfig,
 				categroyStatus,
 				page,
 				categroyKeyWord,
@@ -343,8 +338,6 @@
 				handleDeleteAll,
 				changeInfoPageSize,
 				changeInfoPage,
-				formatDateFormat,
-				formatCategoryId,
 				handleCategoryChange,
 				handleRefresh,
 				hanleSearch,

@@ -14,11 +14,33 @@ router.beforeEach((to,form,next)=>{
 			store.commit('login/SET_USERNAME','')
 			 next()
 		}else{
-			 next()
+			// 获取角色
+			// 动态分配路由权限
+			/* 
+				1、是,时候处理动态路由
+				2、以什么条件处理
+			 */
+					
+			if(store.getters['permit/roles'].length==0){
+				store.dispatch('permit/GetRouls').then(res=>{
+					let roles =res
+					store.commit('permit/SET_BUTTON_PERM',roles.btnPerm)
+					store.dispatch('permit/createRouter',roles.role).then(res=>{
+						let addRouters =store.getters['permit/addRouter']
+						let allRouters =store.getters['permit/allRouter']
+						router.options.routes = allRouters
+						router.addRoutes(addRouters)
+						next({...to,replace:true})
+					})
+				})
+			
+			}else{
+				next()
+			}
 		}
 		
 	}else{
-		if(whiteRouter.indexOf(to.path) !==-1){
+		if(whiteRouter.indexOf(to.path) !=-1){
 			next()
 		}else{
 			next('/login')
